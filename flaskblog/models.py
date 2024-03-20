@@ -21,9 +21,8 @@ class User(db.Model, UserMixin):
         s = Serializer(current_app.config["SECRET_KEY"], expires_sec)
         return s.dumps({"user_id": self.id}, salt=self.salt)
     
-    @staticmethod
-    def verify_reset_token(token):
-        s = Serializer(current_app.config["SECRET_KEY"])
+    def verify_reset_token(self, token):
+        s = Serializer(current_app.config["SECRET_KEY"], salt=self.salt)
         try:
             user_id = s.loads(token)["user_id"]
         except:
